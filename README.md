@@ -242,8 +242,7 @@ cd backend-api && pip install -r requirements.txt && uvicorn main:app --reload
 Data & Ethics
 No PHI in repo. All data de-identified per NDPR.Ethics: Enugu State Health Research Ethics Committee (ESHEC/2024/011)DHIS2 compatible — FHIR JSON export
 Roadmap v1.0 to Field platform completed (current release)v1.3: RCT 100 PHCs for Stage 2 v1.3: Integration with ESPHCDA/NPHCDA national platform. 
-Citation: Ngene, J. (2026). MaternalU5Triage v1.0 Pilot 2024-2025: Clinical Validation in 12 PHCs Enugu State, Nigeria - Correct Triage and Referral Completion Outcomes (Version 1.0). Zenodo. https://doi.org/10.5281/zenodo.22936944
-
+Citation: Ngene, J. (2026). MaternalU5Triage v1.0 Pilot 2024-2025: Clinical Validation in 12 PHCs Enugu State, Nigeria - Correct Triage and Referral Completion Outcomes (Version 1.0). Zenodo. https://doi.org/10.5281/zenodo.23009967  
 
 
 
