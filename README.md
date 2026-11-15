@@ -242,6 +242,70 @@ Data & Ethics
 No PHI in repo. All data de-identified per NDPR.Ethics: Enugu State Health Research Ethics Committee (ESHEC/2024/011)DHIS2 compatible — FHIR JSON export
 Roadmap v1.0 to Field platform completed (current release)v1.3: RCT 100 PHCs for Stage 2 v1.3: Integration with ESPHCDA/NPHCDA national platform. 
 Citation: Ngene, J. (2026). MaternalU5Triage v1.0 Pilot 2024-2025: Clinical Validation in 12 PHCs Enugu State, Nigeria - Correct Triage and Referral Completion Outcomes (Version 1.0). Zenodo. https://doi.org/10.5281/zenodo.23009967
+## Database Architecture - PostgreSQL (Production Ready M1-M3)
+
+Current Status: 12,340 encounters in CSV (pilot) -> migrating to PostgreSQL for Wellcome 81,799 target.
+
+### Schema - HRA & GDPR Compliant
+
+-- 1. Core Encounters (12,340 -> 69,459)
+CREATE TABLE encounters (
+  encounter_id VARCHAR(20) PRIMARY KEY, -- MAT-0012340 format
+  mother_id VARCHAR(20) NOT NULL,
+  phc_name VARCHAR(100) NOT NULL,
+  encounter_date DATE NOT NULL,
+  age INT,
+  parity INT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 2. Triage Results (Red / Yellow / Green WHO Logic)
+CREATE TABLE triage_results (
+  triage_id SERIAL PRIMARY KEY,
+  encounter_id VARCHAR(20) REFERENCES encounters(encounter_id),
+  triage_color VARCHAR(10) CHECK (triage_color IN ('Red','Yellow','Green')),
+  symptoms TEXT,
+  who_guideline_version VARCHAR(10),
+  action_taken VARCHAR(50), -- Refer / Monitor / Home Care
+  referral_facility VARCHAR(100),
+  triaged_by VARCHAR(100),
+  triage_timestamp TIMESTAMP DEFAULT NOW()
+);
+
+-- 3. Butterfly iQ+ Scans (50,000 + 100 WGS Target)
+CREATE TABLE butterfly_scans (
+  scan_id SERIAL PRIMARY KEY,
+  encounter_id VARCHAR(20) REFERENCES encounters(encounter_id),
+  scan_date DATE NOT NULL,
+  gestational_age_weeks INT,
+  probe_id VARCHAR(20), -- Butterfly-01 to Butterfly-08
+  image_quality VARCHAR(20) CHECK (image_quality IN ('Good','Poor')),
+  findings TEXT,
+  operator_name VARCHAR(100),
+  dicom_url TEXT,
+  uploaded_to_server BOOLEAN DEFAULT FALSE
+);
+
+-- 4. Governance & Audit (For Biostatistician 1 UNN)
+CREATE TABLE governance_audit (
+  audit_id SERIAL PRIMARY KEY,
+  table_name VARCHAR(50),
+  record_id VARCHAR(20),
+  action VARCHAR(20),
+  audited_by VARCHAR(100),
+  audit_date TIMESTAMP DEFAULT NOW()
+);
+
+-- Index for Green AI / Federated Learning Pipeline
+CREATE INDEX idx_encounter_date ON encounters(encounter_date);
+CREATE INDEX idx_triage_color ON triage_results(triage_color);
+CREATE INDEX idx_phc ON encounters(phc_name);
+Infrastructure: Hosted on Render PostgreSQL + 
+Node.js WhatsApp API (Meta). Encrypted at rest, role-based access for 12 PHCs, CodeCarbon-monitored. Current CSV 12,340 rows validated, ready for SQL migration M1-M3.
+flood_status_today: Flooded / Not Floodedheat_temp_celsius: Number
+flood_status VARCHAR(20), -- Flooded / Not Flooded
+heat_temp_celsius DECIMAL,
+heat_index_category VARCHAR(20) -- Normal / High >35C
 
 
 
