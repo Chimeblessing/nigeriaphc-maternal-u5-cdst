@@ -306,6 +306,11 @@ flood_status_today: Flooded / Not Floodedheat_temp_celsius: Number
 flood_status VARCHAR(20), -- Flooded / Not Flooded
 heat_temp_celsius DECIMAL,
 heat_index_category VARCHAR(20) -- Normal / High >35C
+Database Schema (PostgreSQL - To be deployed M1-M3):
+- table: encounters (12,340 rows currently in CSV, migrating to SQL)
+- table: triage_results (Red/Yellow/Green + WHO logic)
+- table: butterfly_scans (linked to encounters)
+- Governance: Encrypted, HRA-compliant
 
 
 
